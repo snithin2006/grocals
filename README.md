@@ -1,6 +1,6 @@
 # grocals
 
-A new Flutter project.
+Grocals project.
 
 ## Getting Started
 
