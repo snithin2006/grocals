@@ -29,6 +29,9 @@ class _ProduceDetailsState extends State<ProduceDetails> {
     bool activeBool = produce.produceStatus;
 
     bool activeVisible;
+
+    print(globals.thisPerson.personID);
+
     if(globals.thisPerson.personID == produce.producerID) {
       activeVisible = true;
     } else {
@@ -248,8 +251,7 @@ class _ProduceDetailsState extends State<ProduceDetails> {
                         Switch(
                           value: activeBool,
                           onChanged: (bool value) async {
-                            print("val: " + value.toString());
-                            produce = Produce(produceID: produce.produceID, produceName: produce.produceName, price: produce.price, quantity: produce.quantity, uom: produce.uom, producerID: produce.producerID, producerName: produce.producerName, deliveryOrPickup: produce.deliveryOrPickup, neighborhood: produce.neighborhood, producePostDate: produce.producePostDate, produceStatus: value);
+                            produce = Produce(produceID: produce.produceID, produceName: produce.produceName, price: produce.price, quantity: produce.quantity, uom: produce.uom, producerID: produce.producerID, producerName: produce.producerName, deliveryOrPickup: produce.deliveryOrPickup, neighborhood: produce.neighborhood, producePostDate: produce.producePostDate, produceStatus: value, imageUrl: produce.imageUrl);
                             await updateProduce(produce);
 
                             setState(() {
@@ -258,6 +260,14 @@ class _ProduceDetailsState extends State<ProduceDetails> {
                           },
                         ),
                       ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    child: Container(
+                      height: 200,
+                      width: 200,
+                      child: Image.network(produce.imageUrl),
                     ),
                   ),
                   Divider(

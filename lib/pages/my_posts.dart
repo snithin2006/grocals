@@ -65,6 +65,7 @@ class _MyPostsState extends State<MyPosts> {
                                   subtitle: Text(
                                     'Value: \$' + myFilteredProduces[index].price.toString() + '\nQuantity: ' + myFilteredProduces[index].quantity.toString() + " " + myFilteredProduces[index].uom + '\nProducer: ' + myFilteredProduces[index].producerName,
                                   ),
+                                trailing: Image.network(myFilteredProduces[index].imageUrl),
                               ),
                           ),
                           );

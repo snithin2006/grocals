@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:grocals/produce.dart';
+import 'package:image_picker/image_picker.dart';
 import '../constants.dart';
 import '../person.dart';
 import '../produce_repository.dart';
@@ -12,6 +14,7 @@ import 'package:faunadb_http/query.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:intl/intl.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class AddProduce extends StatefulWidget {
   const AddProduce({Key? key}) : super(key: key);
@@ -39,9 +42,18 @@ class _AddProduceState extends State<AddProduce> {
 
   String error = "";
 
+  String imageUrl = 'https://upload.wikimedia.org/wikipedia/commons/8/89/HD_transparent_picture.png';
+
+  Future<File> compressFile(File file) async{
+    File compressedFile = await FlutterNativeImage.compressImage(file.path,
+      quality: 5,);
+    return compressedFile;
+  }
+
   @override
   Widget build(BuildContext context) {
     final options = ['Pickup', 'Delivery', 'Pickup & Delivery'];
+    Image image = Image.network(imageUrl);
 
     DropdownMenuItem<String> buildMenuItem(String item) => DropdownMenuItem(
       value: item,
@@ -238,7 +250,7 @@ class _AddProduceState extends State<AddProduce> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(0,0,0,30),
+                padding: const EdgeInsets.fromLTRB(0,0,0,0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -275,10 +287,7 @@ class _AddProduceState extends State<AddProduce> {
                           iconEnabledColor: kPrimaryColor,
                           items: options.map(buildMenuItem).toList(),
                           onChanged: (String? newValue) => setState(() {
-                            //print(newValue);
                             dop = newValue;
-                            print("new val: " + newValue.toString());
-                            print("options: " + options.toString());
                           }),
                         ),
                       ),
@@ -286,115 +295,154 @@ class _AddProduceState extends State<AddProduce> {
                   ],
                 ),
               ),
-              Visibility(
-                visible: visible,
-                child: Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    error,
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 10,
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                child: Visibility(
+                  visible: visible,
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      error,
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 15,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
+              IconButton(
+                onPressed: () async {
+                  ImagePicker picker = ImagePicker();
+                  XFile? imageFile = await picker.pickImage(source: ImageSource.gallery);
+
+                  if(imageFile == null) return;
+                  print("Image File Path: " + imageFile.path);
+                  File originalFile = File( imageFile.path );
+                  File? file = await compressFile(originalFile);
+
+                  String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+                  Reference referenceRoot = FirebaseStorage.instance.ref();
+                  Reference referenceDirImages = referenceRoot.child('images');
+
+                  Reference referenceImageToUpload = referenceDirImages.child(uniqueFileName);
+
+                  try {
+                    await referenceImageToUpload.putFile(File(file!.path));
+                    imageUrl = await referenceImageToUpload.getDownloadURL();
+                    image = Image.network(imageUrl);
+                    setState(() {});
+                  }
+                  catch(error) {
+
+                  }
+
+                  print("Image URL: " + imageUrl);
+
+                },
+                icon: Icon(Icons.camera_alt),
+                color: kPrimaryColor,
+              ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 30),
                 child: Container(
-                  height: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: kPrimaryColor,
-                  ),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        foregroundColor: kPrimaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
-                      ),
-                      onPressed: () async {
-                        try {
-                          name = _nameController.text;
-                        } on FormatException {
-                          setState(() {
-                            visible = true;
-                            error = "Make sure you are entering a valid name";
-                          });
-                        }
-
-                        try {
-                          price = double.parse(_priceController.text);
-                        } on FormatException {
-                          print(_priceController.text);
-                          if(_priceController.text.toString() == "") {
-                            price = 0;
-                          }
-                          setState(() {
-                            visible = true;
-                            error = "Make sure you are entering a valid number";
-                          });
-                        }
-
-                        try {
-                          quantity = double.parse(_quantityController.text);
-                        } on FormatException {
-                          setState(() {
-                            visible = true;
-                            error = "Make sure you are entering a valid number";
-                          });
-                        }
-
-                        try {
-                          uom = _uomController.text;
-                        } on FormatException {
-                          setState(() {
-                            visible = true;
-                            error = "Make sure you are entering a valid measurement";
-                          });
-                        }
-
-                        if(name.length > 18) {
-                          setState(() {nameVisible = true;});
-                          print(nameVisible);
-                        }
-                        else if(price.toString().length > 10) {
-                          setState(() {valueVisible = true;});
-                        }
-                        else if(quantity.toString().length > 10) {
-                          setState(() {quantityVisible = true;});
-                        }
-                        else if(uom.length > 10) {
-                          setState(() {uomVisible = true;});
-                        }
-
-
-                        else {
-                          final Person person = await PersonPreferences().getPerson();
-                          var now = new DateTime.now();
-                          var formatter = new DateFormat('yyyy-MM-dd');
-                          String producePostDate = formatter.format(now);
-
-                          Produce newProduce = Produce(produceID: DateTime.now().millisecondsSinceEpoch, produceName: name, price: price, quantity: quantity, uom: uom, producerID: person.personID, producerName: '', deliveryOrPickup: dop as String, neighborhood: person.city.toUpperCase().removeAllWhitespace(), producePostDate: producePostDate, produceStatus: true);
-                          createProduce(newProduce);
-
-
-                          Navigator.pop(context, true);
-                        }
-                      },
-                      child: const Text(
-                        'Submit',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                  height: 200,
+                  width: 200,
+                  child: image,
                 ),
-        ),
+              ),
+              Container(
+                height: 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: kPrimaryColor,
+                ),
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: kPrimaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+                  ),
+                  onPressed: () async {
+                    try {
+                      name = _nameController.text;
+                    } on FormatException {
+                      setState(() {
+                        visible = true;
+                        error = "Make sure you are entering a valid name";
+                      });
+                    }
+
+                    try {
+                      price = double.parse(_priceController.text);
+                    } on FormatException {
+                      if(_priceController.text.toString() == "") {
+                        price = 0;
+                      }
+                      setState(() {
+                        visible = true;
+                        error = "Make sure you are entering a valid number";
+                      });
+                    }
+
+                    try {
+                      quantity = double.parse(_quantityController.text);
+                    } on FormatException {
+                      setState(() {
+                        visible = true;
+                        error = "Make sure you are entering a valid number";
+                      });
+                    }
+
+                    try {
+                      uom = _uomController.text;
+                    } on FormatException {
+                      setState(() {
+                        visible = true;
+                        error = "Make sure you are entering a valid measurement";
+                      });
+                    }
+
+                    if(name.length > 18) {
+                      setState(() {nameVisible = true;});
+                    }
+                    else if(price.toString().length > 10) {
+                      setState(() {valueVisible = true;});
+                    }
+                    else if(quantity.toString().length > 10) {
+                      setState(() {quantityVisible = true;});
+                    }
+                    else if(uom.length > 10) {
+                      setState(() {uomVisible = true;});
+                    }
+
+
+                    else {
+                      final Person person = await PersonPreferences().getPerson();
+                      var now = new DateTime.now();
+                      var formatter = new DateFormat('yyyy-MM-dd');
+                      String producePostDate = formatter.format(now);
+
+                      Produce newProduce = Produce(produceID: DateTime.now().millisecondsSinceEpoch, produceName: name, price: price, quantity: quantity, uom: uom, producerID: person.personID, producerName: '', deliveryOrPickup: dop as String, neighborhood: person.city.toUpperCase().removeAllWhitespace(), producePostDate: producePostDate, produceStatus: true, imageUrl: imageUrl);
+                      createProduce(newProduce);
+
+
+                      Navigator.pop(context, true);
+                    }
+                  },
+                  child: const Text(
+                    'Submit',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

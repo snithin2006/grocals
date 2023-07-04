@@ -41,18 +41,24 @@ Future<List<Produce>> getProduces(String search) async {
     List itemlist = List.from(result.asMap()['resource']['data'].map((item) {return item;}));
     filteredProduces = [];
 
+
     for (var item in itemlist){
-      Produce produce = Produce(produceID: item[0],
-          produceName: item[1],
-          price: item[2],
-          quantity: item[3],
-          uom: item[4],
-          producerID: item[5],
-          producerName: item[6],
-          deliveryOrPickup: item[7],
-          neighborhood: item[8],
-          producePostDate: item[9],
-          produceStatus: item[10]);
+      print("item: " + item.toString());
+      Produce produce = Produce(
+        produceID: item[0],
+        produceName: item[1],
+        price: item[2],
+        quantity: item[3],
+        uom: item[4],
+        producerID: item[5],
+        producerName: item[6],
+        deliveryOrPickup: item[7],
+        neighborhood: item[8],
+        producePostDate: item[9],
+        produceStatus: item[10],
+        imageUrl: item[11],
+      );
+
       if(search == "" && produce.produceStatus == true) {
         filteredProduces.add(produce);
       }
@@ -63,6 +69,7 @@ Future<List<Produce>> getProduces(String search) async {
       }
     }
   }
+
 
   filteredProduces.sort();
 
@@ -97,7 +104,9 @@ Future<List<Produce>> getGuestProduces(String search, String city) async {
           deliveryOrPickup: item[7],
           neighborhood: item[8],
           producePostDate: item[9],
-          produceStatus: item[10]);
+          produceStatus: item[10],
+          imageUrl: item[11],
+      );
       if(search == "") {
         guestProduces.add(produce);
       }
@@ -133,7 +142,19 @@ Future<List<Produce>> getMyProduces() async {
 
     for (var item in itemlist){
       if(person.personID == item[5]) {
-        Produce produce = Produce(produceID: item[0], produceName: item[1], price: item[2], quantity: item[3], uom: item[4], producerID: item[5], producerName: item[6], deliveryOrPickup: item[7], neighborhood: item[8], producePostDate: item[9], produceStatus: item[10]);
+        Produce produce = Produce(produceID: item[0],
+          produceName: item[1],
+          price: item[2],
+          quantity: item[3],
+          uom: item[4],
+          producerID: item[5],
+          producerName: item[6],
+          deliveryOrPickup: item[7],
+          neighborhood: item[8],
+          producePostDate: item[9],
+          produceStatus: item[10],
+          imageUrl: item[11],
+        );
         myFilteredProduces.add(produce);
       }
     }
@@ -158,7 +179,7 @@ Future<void> createProduce(Produce produce) async {
     final createDocumentQuery = Create(
       Collection('produces'),
       Obj({
-        'data': { 'produceID': DateTime.now().millisecondsSinceEpoch, 'produceName': produce.produceName, 'price': produce.price, 'quantity': produce.quantity, 'uom': produce.uom, 'producerID': produce.producerID, 'producerName': produce.producerName, 'deliveryOrPickup': produce.deliveryOrPickup, 'neighborhood': produce.neighborhood, 'producePostDate': produce.producePostDate, 'produceStatus': produce.produceStatus }
+        'data': { 'produceID': DateTime.now().millisecondsSinceEpoch, 'produceName': produce.produceName, 'price': produce.price, 'quantity': produce.quantity, 'uom': produce.uom, 'producerID': produce.producerID, 'producerName': produce.producerName, 'deliveryOrPickup': produce.deliveryOrPickup, 'neighborhood': produce.neighborhood, 'producePostDate': produce.producePostDate, 'produceStatus': produce.produceStatus, 'imageUrl': produce.imageUrl }
       }),
     );
 
@@ -216,88 +237,3 @@ Future<Map<String, dynamic>> updateProduce(Produce produce) async {
   client.close();
   return response;
 }
-
-/*
-Future<Produce?> getProduce(int produceID) async {
-
-  final getProducesQuery;
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
-  final client = FaunaClient(config);
-
-  getProducesQuery = Paginate(Match(Index('produce_by_id'), terms:[produceID]));
-  final result = await client.query(getProducesQuery);
-
-  Produce? produce;
-  if (result.hasErrors) {
-    print('getProduce: Error');
-    print(result.errors.toString());
-  }
-  else {
-    List itemlist = List.from(result.asMap()['resource']['data'].map((item) {return item;}));
-
-    var item = itemlist[0];
-
-    produce = Produce(produceID: item[0],
-      produceName: item[1],
-      price: item[2],
-      quantity: item[3],
-      uom: item[4],
-      producerID: item[5],
-      producerName: item[6],
-      deliveryOrPickup: item[7],
-      neighborhood: item[8],
-      producePostDate: item[9],
-      produceStatus: item[10]);
-  }
-
-  produce = null;
-
-  client.close();
-  return produce;
-}
-
- */
-
-/*
-Future<List<Produce>> getProduce(int produceID) async {
-  produces = [];
-  //List<Produce> responseProduces = [];
-  final getProducesQuery;
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
-  final client = FaunaClient(config);
-
-  final Person person = await PersonPreferences().getPerson();
-  getProducesQuery = Paginate(Match(Index('produce_by_id'), terms:[produceID]));
-  final result = await client.query(getProducesQuery);
-  if (result.hasErrors) {
-    print('getProduce: Error');
-    print(result.errors.toString());
-  }
-  else {
-    List itemlist = List.from(result.asMap()['resource']['data'].map((item) {return item;}));
-    produces = [];
-
-    for (var item in itemlist){
-      Produce produce = Produce(produceID: item[0],
-          produceName: item[1],
-          price: item[2],
-          quantity: item[3],
-          uom: item[4],
-          producerID: item[5],
-          producerName: item[6],
-          deliveryOrPickup: item[7],
-          neighborhood: item[8],
-          producePostDate: item[9],
-          produceStatus: item[10]);
-
-      produces.add(produce);
-    }
-  }
-
-  client.close();
-
-  print("Finished getproduce");
-
-  return produces;
-}
- */

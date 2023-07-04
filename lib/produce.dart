@@ -12,6 +12,7 @@ class Produce implements Comparable<Produce> {
   String neighborhood;
   String producePostDate;
   bool produceStatus;
+  String imageUrl;
 
 
   Produce(
@@ -27,6 +28,7 @@ class Produce implements Comparable<Produce> {
       required this.neighborhood,
       required this.producePostDate,
       required this.produceStatus,
+      required this.imageUrl
     }
   );
 

@@ -42,11 +42,8 @@ class _HomeState extends State<Home> {
 
   void getNotifications() async {
     total = await getTotal();
-    print(total.toString());
-
     for(Message msg in total) {
       if(msg.status == "Unread") {
-        print(msg.message);
         setState(() {
           noti = true;
         });
@@ -57,7 +54,6 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    print('init');
     super.initState();
     requestPermission();
     getToken();
@@ -100,7 +96,6 @@ class _HomeState extends State<Home> {
             (token) {
           setState(() {
             mtoken = token;
-            //print("My token is $mtoken");
           });
           saveToken(token!);
         }
@@ -112,19 +107,15 @@ class _HomeState extends State<Home> {
     await FirebaseFirestore.instance.collection("UserTokens").doc(person.personID).set({
       'token' : token,
     });
-    //print("save token done");
   }
 
   initInfo() {
-    //print('init info starting');
     var androidInitialize = const notifications.AndroidInitializationSettings('@mipmap/ic_launcher');
     var iOSInitialize = const notifications.DarwinInitializationSettings();
     var initializationsSettings = notifications.InitializationSettings(android: androidInitialize, iOS: iOSInitialize);
     flutterLocalNotificationsPlugin.initialize(initializationsSettings);
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      //print("...........onMessage...........");
-      //print("onMessage: ${message.notification?.title}/${message.notification?.body}}");
 
       notifications.BigTextStyleInformation bigTextStyleInformation = notifications.BigTextStyleInformation(
         message.notification!.body.toString(), htmlFormatBigText: true,
@@ -240,20 +231,21 @@ class _HomeState extends State<Home> {
                             padding: const EdgeInsets.fromLTRB(15, 0, 15, 5),
                             child: Card(
                               child: ListTile(
-                              contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 5),
-                              tileColor: Colors.white,
-                              onTap: () {Navigator.pushNamed(context, '/produceDetails', arguments: filteredProduces[index]);},
-                              title: Text(
-                                filteredProduces[index].produceName,
-                                style: const TextStyle(
-                                  fontSize: 15.0,
-                                  color: Colors.lightGreen,
-                                  fontWeight: FontWeight.bold,
+                                contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 5),
+                                tileColor: Colors.white,
+                                onTap: () {Navigator.pushNamed(context, '/produceDetails', arguments: filteredProduces[index]);},
+                                title: Text(
+                                  filteredProduces[index].produceName,
+                                  style: const TextStyle(
+                                    fontSize: 15.0,
+                                    color: Colors.lightGreen,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              subtitle: Text(
+                                subtitle: Text(
                                 'Value: \$' + filteredProduces[index].price.toString() + '\nQuantity: ' + filteredProduces[index].quantity.toString() + " " + filteredProduces[index].uom + '\nProducer: ' + filteredProduces[index].producerName,
                               ),
+                                trailing: Image.network(filteredProduces[index].imageUrl),
                             ),
                             ),
                           );

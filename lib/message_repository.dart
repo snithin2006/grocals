@@ -33,8 +33,6 @@ void sendPushMessage(String token, String body, String title) async {
       },
     );
 
-    print(bodyJSON);
-
     http.Response jsonResponse = await http.post(
       Uri.parse('https://fcm.googleapis.com/fcm/send'),
       headers: <String, String> {
@@ -43,9 +41,6 @@ void sendPushMessage(String token, String body, String title) async {
       },
       body: bodyJSON,
     );
-
-    print("status code: " + jsonResponse.statusCode.toString());
-    print(jsonResponse.body);
 
   } catch (e) {
     if (kDebugMode) {
@@ -254,11 +249,6 @@ Future<void> createMessage(Message message) async {
   firestore.DocumentSnapshot snap = await firestore.FirebaseFirestore.instance.collection("UserTokens").doc(message.receiverID).get();
   String token = snap['token'];
 
-  //print("receiver token: " + token);
-  //print("message body: " + message.message);
-  //print("sender name: " + message.senderName);
-  //print("**********************************");
-  //print("");
   sendPushMessage(token, message.message, message.senderName);
 
 }

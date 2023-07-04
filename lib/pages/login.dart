@@ -245,6 +245,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
       else {
+        globals.thisPerson = person;
         Navigator.pushReplacementNamed(context, '/home');
       }
     });
