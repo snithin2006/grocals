@@ -39,7 +39,7 @@ void sendPushMessage(String token, String body, String title) async {
       Uri.parse('https://fcm.googleapis.com/fcm/send'),
       headers: <String, String> {
         'Content-Type' : 'application/json',
-        'Authorization' : 'key=AAAAeIX1Uh0:APA91bEqVWoCZpGsNpihmHVSBGZCsH7BxF2Wx-OMudpWJhJ1vKoVDbYKYtmXNVgLbVh1YNpmRX6utjynZ-62N7fHlpJcF8LHJc6rdoUyW9Rv923pMYjqUQTmo_fJ-_c1qCoayW3xRStL',
+        'Authorization' : 'key=**',
       },
       body: bodyJSON,
     );
