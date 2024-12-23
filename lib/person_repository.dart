@@ -29,7 +29,7 @@ extension ExtendedString on String {
 Future<Map<String, dynamic>> getPerson(String email, String password) async {
   Map<String, dynamic> response = {};
   late Person person;
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   // just added to test firebase DB connection
@@ -86,7 +86,7 @@ Future<Map<String, dynamic>> getPerson(String email, String password) async {
 
 Future<Map<String, dynamic>> createPerson(Person person, String secretQuestion, String secretAnswer) async {
   Map<String, dynamic> response = {};
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
     String hashedPassword = Crypt.sha256(person.password, salt: person.email)
@@ -121,7 +121,7 @@ Future<Map<String, dynamic>> createPerson(Person person, String secretQuestion, 
 
 Future<Map<String, dynamic>> updatePerson(Person person) async {
   Map<String, dynamic> response = {};
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   String refID = await getPersonRef(person.email);
@@ -147,7 +147,7 @@ Future<Map<String, dynamic>> updatePerson(Person person) async {
 
 Future<Map<String, dynamic>> updatePassword(String email, String refID, String password) async {
   Map<String, dynamic> response = {};
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   log('updatePassword refID: ' + refID);
@@ -172,7 +172,7 @@ Future<Map<String, dynamic>> updatePassword(String email, String refID, String p
 
 Future<String> getPersonRef(String email) async {
   String refID = "";
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   final getPersonRefQuery = Paginate(Match(Index('person_ref_by_email'), terms:[email]));
@@ -200,7 +200,7 @@ Future<String> getPersonRef(String email) async {
 
 Future<String> getSecretAnswer(String email) async {
   String secretAnswer = "";
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   final getPersonRefQuery = Paginate(Match(Index('person_secret_by_email'), terms:[email]));
@@ -258,7 +258,7 @@ Future<Map<String, dynamic>> getSecretQuestion(String email) async {
     "secretQuestion": "",
   };
 
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   final getPersonRefQuery = Paginate(Match(Index('person_question_by_email'), terms:[email]));
@@ -293,7 +293,7 @@ Future<Map<String, dynamic>> getSecretQuestion(String email) async {
 
 void deletePerson(Person person) async {
   Map<String, dynamic> response = {};
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   String refID = await getPersonRef(person.email);
