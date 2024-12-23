@@ -47,7 +47,7 @@ Future<List<Interest>> getInterests(int search) async {
 
 Future<List<Interest>> getMyInterests() async {
 
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   final Person person = await PersonPreferences().getPerson();
@@ -75,7 +75,7 @@ Future<List<Interest>> getMyInterests() async {
 
 Future<List<Interest>> getInterest(int id) async {
 
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   final getInterestsQuery = Paginate(Match(Index('interests_by_interest'), terms:[id]));
@@ -100,7 +100,7 @@ Future<List<Interest>> getInterest(int id) async {
 }
 
 Future<void> createInterest(Interest interest) async {
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   final Future<Person> futureResponse = PersonPreferences().getPerson();
