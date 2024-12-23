@@ -55,7 +55,7 @@ void sendPushMessage(String token, String body, String title) async {
 }
 
 Future<PersonMessage> getMessages(int search) async {
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
   final getMessagesForInterestQuery = Paginate(Match(Index('messages_by_interest'), terms:[search]));
 
@@ -100,7 +100,7 @@ Future<List<Message>> getInbox() async {
   }
 
   inbox = [];
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   final Person person = await PersonPreferences().getPerson();
@@ -174,7 +174,7 @@ Future<List<Message>> getTotal() async {
   }
   total = [];
 
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   final Person person = await PersonPreferences().getPerson();
@@ -234,7 +234,7 @@ Future<List<Message>> getTotal() async {
 }
 
 Future<void> createMessage(Message message) async {
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   final Person person = await PersonPreferences().getPerson();
@@ -265,7 +265,7 @@ Future<void> createMessage(Message message) async {
 
 Future<void> updateMessage(String refID) async {
 
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   final updateMessageQuery = Update(
