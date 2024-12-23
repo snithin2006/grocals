@@ -27,7 +27,7 @@ Future<List<Produce>> getProduces(String search) async {
   filteredProduces = [];
   //List<Produce> responseProduces = [];
   final getProducesQuery;
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   final Person person = await PersonPreferences().getPerson();
@@ -73,7 +73,7 @@ Future<List<Produce>> getProduces(String search) async {
 Future<List<Produce>> getGuestProduces(String search, String city) async {
   //List<Produce> responseProduces = [];
   final getProducesQuery;
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   getProducesQuery = Paginate(Match(Index('produces_by_city'), terms:[city.toUpperCase().removeAllWhitespace()]));
@@ -116,7 +116,7 @@ Future<List<Produce>> getGuestProduces(String search, String city) async {
 }
 
 Future<List<Produce>> getMyProduces() async {
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   final Person person = await PersonPreferences().getPerson();
@@ -146,7 +146,7 @@ Future<List<Produce>> getMyProduces() async {
 }
 
 Future<void> createProduce(Produce produce) async {
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   final Future<Person> futureResponse = PersonPreferences().getPerson();
@@ -170,7 +170,7 @@ Future<void> createProduce(Produce produce) async {
 
 Future<String> getProduceRef(int produceID) async {
   String refID = "";
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   final getProduceRefQuery = Paginate(Match(Index('produce_ref_by_id'), terms:[produceID]));
@@ -196,7 +196,7 @@ Future<String> getProduceRef(int produceID) async {
 
 Future<Map<String, dynamic>> updateProduce(Produce produce) async {
   Map<String, dynamic> response = {};
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   String refID = await getProduceRef(produce.produceID);
@@ -221,7 +221,7 @@ Future<Map<String, dynamic>> updateProduce(Produce produce) async {
 Future<Produce?> getProduce(int produceID) async {
 
   final getProducesQuery;
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   getProducesQuery = Paginate(Match(Index('produce_by_id'), terms:[produceID]));
@@ -263,7 +263,7 @@ Future<List<Produce>> getProduce(int produceID) async {
   produces = [];
   //List<Produce> responseProduces = [];
   final getProducesQuery;
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   final Person person = await PersonPreferences().getPerson();
