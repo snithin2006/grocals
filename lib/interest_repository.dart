@@ -19,7 +19,7 @@ List<Interest> interestIDs = [];
 
 Future<List<Interest>> getInterests(int search) async {
 
-  final config = FaunaConfig.build(secret: 'fnAEba7nlhAARD6t9uU04DyCmsN9ngnTCQbh6kIC', domain: 'db.us.fauna.com');
+  final config = FaunaConfig.build(secret: '**', domain: 'db.us.fauna.com');
   final client = FaunaClient(config);
 
   final getInterestsQuery = Paginate(Match(Index('interests_by_produce'), terms:[search]));
